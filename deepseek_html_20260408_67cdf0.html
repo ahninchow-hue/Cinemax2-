@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سينما ناو — Netflix Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #071017;
+            --panel: #0b1220;
+            --muted: #9aa4b2;
+            --accent-red: #ff4b5c;
+            --glow-green: #00ff85;
+            --card-radius: 12px;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Cairo", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(900px 400px at 10% 10%, rgba(0, 120, 60, 0.04), transparent),
+                        linear-gradient(180deg, #02030a, #071017);
+            color: #eaf2fb;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--glow-green), #72ffb3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #012;
+            font-size: 20px;
+            box-shadow: 0 8px 28px rgba(0, 255, 133, 0.08);
+        }
+
+        .site-title {
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .site-subtitle {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 45px 10px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            width: 300px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--glow-green);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(0, 255, 133, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--muted);
+        }
+
+        .search-btn {
+            position: absolute;
+            left: 10px;
+            background: none;
+            border: none;
+            color: var(--glow-green);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background: rgba(0, 255, 133, 0.1);
+            transform: scale(1.1);
+        }
+
+        .audio-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--glass);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--glow-green);
+            transition: all 0.2s ease;
+        }
+
+        .audio-control:hover {
+            background: rgba(0, 255, 133, 0.1);
+        }
+
+        .audio-control.playing {
+            background: var(--glow-green);
+            color: #001f0f;
+            box-shadow: 0 8px 25px rgba(0, 255, 133, 0.3);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-red), #ff7a8a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: var(--panel);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .netflix-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 20px;
+            background: transparent;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 80px;
+            z-index: 150;
+            background: rgba(7, 16, 23, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .netflix-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--accent-red), #ff7a8a);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(255, 75, 92, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .netflix-section {
+            display: none;
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .netflix-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin: 0;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .netflix-row {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .row-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 0 20px;
+        }
+
+        .row-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .row-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 20px;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+
+        .row-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .netflix-card {
+            flex: 0 0 auto;
+            width: 280px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .netflix-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .netflix-card.large {
+            width: 320px;
+        }
+
+        .netflix-card.small {
+            width: 200px;
+        }
+
+        .card-poster {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background: #061022;
+            display: block;
+        }
+
+        .card-poster.medium {
+            height: 300px;
+        }
+
+        .card-poster.small {
+            height: 240px;
+        }
+
+        .card-content {
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        }
+
+        .card-title {
+            font-weight: 800;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .card-meta {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-red);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: var(--glow-green);
+            color: #001f0f;
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ep-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--accent-red), #ff8a96);
+            color: #071022;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: 11px;
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);
+        }
+
+        .rating-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 10px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .ad-free-badge {
+            position: absolute;
+            top: 45px;
+            left: 10px;
+            background: linear-gradient(135deg, #00ff85, #72ffb3);
+            color: #001f0f;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 9px;
+            box-shadow: 0 4px 15px rgba(0, 255, 133, 0.3);
+        }
+
+        .row-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .scroll-btn {
+            padding: 8px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scroll-btn:hover {
+            background: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        /* أنماط المودال */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 1200;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-bg {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 1100px;
+            background: linear-gradient(180deg, #071225, #06121b);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .modal-body {
+            padding: 0;
+        }
+
+        iframe.player {
+            width: 100%;
+            height: 70vh;
+            border: 0;
+            background: #000;
+        }
+
+        .quality-selector {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quality-btn {
+            padding: 6px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .quality-btn.active {
+            background: var(--glow-green);
+            color: #001f0f;
+            border-color: var(--glow-green);
+        }
+
+        .quality-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .server-selector {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .server-btn {
+            padding: 6px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .server-btn.active {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
+
+        .server-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* أنماط التحميل */
+        .download-options {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .download-options.open {
+            display: flex;
+        }
+
+        .download-modal {
+            background: var(--panel);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .quality-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-btn {
+            background: var(--glow-green);
+            color: #001f0f;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 133, 0.5);
+        }
+
+        .download-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--glow-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* أنماط التصفية */
+        .filters {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--glow-green);
+            color: #001f0f;
+            border-color: var(--glow-green);
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* أنماط التحميل */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: var(--muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--glow-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* أنماط الترجمة والمشاهدة الجماعية */
+        .subtitle-controls, .watch-party-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .subtitle-select, .party-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .party-btn {
+            background: var(--accent-red);
+        }
+
+        /* أنماط النافذة العائمة */
+        .pip-btn {
+            background: var(--glow-green);
+            color: #001f0f;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .pip-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 133, 0.5);
+        }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        footer strong {
+            color: var(--glow-green);
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .search-input {
+                width: 200px;
+            }
+            .netflix-nav {
+                gap: 6px;
+                padding: 10px 15px;
+            }
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+            .netflix-card {
+                width: 240px;
+            }
+            .netflix-card.large {
+                width: 280px;
+            }
+            .netflix-card.small {
+                width: 180px;
+            }
+            .card-poster {
+                height: 320px;
+            }
+            .card-poster.medium {
+                height: 250px;
+            }
+            .card-poster.small {
+                height: 200px;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+            .row-title {
+                font-size: 18px;
+            }
+            .modal-card {
+                max-width: 95%;
+            }
+            .filters {
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-input {
+                width: 150px;
+                font-size: 12px;
+            }
+            .netflix-card {
+                width: 200px;
+            }
+            .netflix-card.small {
+                width: 160px;
+            }
+            .card-poster {
+                height: 280px;
+            }
+            .card-poster.small {
+                height: 180px;
+            }
+            .brand {
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo">M ❤️</div>
+            <div>
+                <div class="site-title">سينما ناو</div>
+                <div class="site-subtitle">Netflix Style — محمد أحنيين</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="ابحث عن فيلم أو مسلسل..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="audio-control" id="audioControl" title="تشغيل / إيقاف الموسيقى" role="button" aria-pressed="false">
+                <i class="fas fa-music"></i>
+                <span style="font-size:13px">موسيقى</span>
+            </div>
+            <div class="user-menu" onclick="toggleUserMenu()">
+                <div class="user-avatar">م</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- قائمة المستخدم -->
+    <div class="user-menu-dropdown" id="userMenu">
+        <div style="margin-bottom: 10px;"><strong>مرحباً، محمد</strong></div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="action-btn btn-outline" onclick="showWatchHistory()">سجل المشاهدة</button>
+            <button class="action-btn btn-outline" onclick="showFavorites()">المفضلة</button>
+            <button class="action-btn btn-outline" onclick="showSettings()">الإعدادات</button>
+            <button class="action-btn btn-outline" onclick="showStatistics()">إحصائيات المشاهدة</button>
+        </div>
+    </div>
+
+    <audio id="introAudio" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/08/audio_bf1de6f3cf.mp3?filename=sci-fi-cinematic-intro-11029.mp3" type="audio/mp3">
+    </audio>
+    <audio id="loopAudio" preload="auto" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2024/01/24/audio_8dc8790f75.mp3?filename=soft-piano-melody-185359.mp3" type="audio/mp3">
+    </audio>
+    <audio id="fx" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9abf5f7e10.mp3?filename=click-ping-6161.mp3" type="audio/mp3">
+    </audio>
+
+    <main>
+        <div class="netflix-nav">
+            <button class="nav-btn active" data-section="featured">🎬 المميز</button>
+            <button class="nav-btn" data-section="movies">🎥 أفلام عالمية</button>
+            <button class="nav-btn" data-section="series">📺 مسلسلات أجنبية</button>
+            <button class="nav-btn" data-section="anime">🇯🇵 أنمي</button>
+            <button class="nav-btn" data-section="turkish">🇹🇷 تركية</button>
+            <button class="nav-btn" data-section="arabic">🌍 عربية</button>
+            <button class="nav-btn" data-section="animation">🎪 أنميشن</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">الكل</button>
+            <button class="filter-btn" data-filter="action">أكشن</button>
+            <button class="filter-btn" data-filter="drama">دراما</button>
+            <button class="filter-btn" data-filter="comedy">كوميدي</button>
+            <button class="filter-btn" data-filter="thriller">إثارة</button>
+            <button class="filter-btn" data-filter="romance">رومانسي</button>
+            <button class="filter-btn" data-filter="fantasy">خيال</button>
+            <button class="filter-btn" data-filter="sci-fi">خيال علمي</button>
+            <button class="filter-btn" data-filter="adventure">مغامرات</button>
+        </div>
+
+        <section id="featured" class="netflix-section active">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">المحتوى المميز</h2>
+                    <div class="section-subtitle">أفضل الأفلام والمسلسلات المختارة لك - خالية من الإعلانات</div>
+                </div>
+            </div>
+            <div class="netflix-row">
+                <div class="row-header">
+                    <h3 class="row-title">أفلام حصرية بدون إعلانات</h3>
+                    <div class="row-controls">
+                        <button class="scroll-btn left" onclick="scrollRow(this, -300)">‹</button>
+                        <button class="scroll-btn right" onclick="scrollRow(this, 300)">›</button>
+                    </div>
+                </div>
+                <div class="row-scroll" id="featured-movies">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+            
+            <div class="netflix-row">
+                <div class="row-header">
+                    <h3 class="row-title">مسلسلات مشهورة</h3>
+                    <div class="row-controls">
+                        <button class="scroll-btn left" onclick="scrollRow(this, -300)">‹</button>
+                        <button class="scroll-btn right" onclick="scrollRow(this, 300)">›</button>
+                    </div>
+                </div>
+                <div class="row-scroll" id="featured-series">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <!-- الأقسام الأخرى -->
+        <section id="movies" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">🎥 أفلام عالمية</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="movies-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <section id="series" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">📺 مسلسلات أجنبية</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="series-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <section id="anime" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">🇯🇵 أنمي</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="anime-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <section id="turkish" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">🇹🇷 مسلسلات تركية</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="turkish-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <section id="arabic" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">🌍 مسلسلات عربية</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="arabic-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+
+        <section id="animation" class="netflix-section">
+            <div class="section-header">
+                <h2 class="section-title">🎪 أفلام ومسلسلات أنميشن</h2>
+            </div>
+            <div class="netflix-row">
+                <div class="row-scroll" id="animation-content">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- مودال المشاهدة -->
+    <div class="modal" id="videoModal">
+        <div class="modal-bg" onclick="closeModal()"></div>
+        <div class="modal-card">
+            <div class="modal-head">
+                <div class="modal-title" id="modalTitle">مشاهدة الفيلم</div>
+                <button class="scroll-btn" onclick="closeModal()">✕</button>
+            </div>
+            
+            <!-- عناصر التحكم في الترجمة -->
+            <div class="subtitle-controls">
+                <select class="subtitle-select" id="subtitleSelect" onchange="changeSubtitle(this.value)">
+                    <option value="none">بدون ترجمة</option>
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                </select>
+                <button class="action-btn btn-outline" onclick="adjustSubtitleTiming(-1)">← توقيت</button>
+                <button class="action-btn btn-outline" onclick="adjustSubtitleTiming(1)">توقيت →</button>
+                <button class="pip-btn" onclick="togglePictureInPicture()">
+                    <i class="fas fa-compress"></i> نافذة عائمة
+                </button>
+            </div>
+
+            <!-- المشاهدة الجماعية -->
+            <div class="watch-party-controls">
+                <button class="party-btn" onclick="createWatchParty()">بدء مشاهدة جماعية</button>
+                <button class="action-btn btn-outline" onclick="joinWatchParty()">الانضمام لمشاهدة</button>
+            </div>
+
+            <div class="server-selector" id="serverSelector">
+                <!-- سيتم ملؤه بالجافاسكريبت -->
+            </div>
+            <div class="quality-selector" id="qualitySelector">
+                <!-- سيتم ملؤه بالجافاسكريبت -->
+            </div>
+            <div class="modal-body">
+                <iframe class="player" id="videoPlayer" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال التحميل -->
+    <div class="download-options" id="downloadOptions">
+        <div class="modal-bg" onclick="closeDownloadOptions()"></div>
+        <div class="download-modal">
+            <h3 style="margin-bottom: 20px; text-align: center;">خيارات التحميل</h3>
+            <div class="quality-options">
+                <div class="quality-option">
+                    <div>
+                        <span class="quality-label">جودة متوسطة 480p</span>
+                        <span class="size">(700MB)</span>
+                    </div>
+                    <button class="download-btn" onclick="startDownload('480p')">تحميل</button>
+                </div>
+                <div class="quality-option">
+                    <div>
+                        <span class="quality-label">جودة عالية 720p</span>
+                        <span class="size">(1.5GB)</span>
+                    </div>
+                    <button class="download-btn" onclick="startDownload('720p')">تحميل</button>
+                </div>
+                <div class="quality-option">
+                    <div>
+                        <span class="quality-label">جودة فائقة 1080p</span>
+                        <span class="size">(3GB)</span>
+                    </div>
+                    <button class="download-btn" onclick="startDownload('1080p')">تحميل</button>
+                </div>
+            </div>
+            <div id="downloadProgressContainer" style="display: none;">
+                <div class="download-progress">
+                    <div class="progress-bar" id="downloadProgressBar"></div>
+                </div>
+                <p style="text-align: center; margin-top: 10px;" id="downloadStatus">جاري التحميل...</p>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="action-btn btn-outline" onclick="closeDownloadOptions()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 <strong>سينما ناو</strong> — تصميم <strong>محمد أحنيين</strong></p>
+        <p style="margin-top:10px;font-size:12px">هذا الموقع لأغراض تعليمية وتجريبية فقط</p>
+    </footer>
+
+    <script>
+        // قاعدة بيانات المحتوى الموسعة
+        const contentDatabase = {
+            featured: [
+                {
+                    id: 1,
+                    title: "The Batman",
+                    year: 2022,
+                    rating: 8.2,
+                    duration: "176 دقيقة",
+                    genres: ["أكشن", "جريمة", "غموض"],
+                    type: "movie",
+                    poster: "https://m.media-amazon.com/images/M/MV5BMDg2YzI0ODctYjVhYS00NzU0LTgxZTUtNzJhYjM0Y2Q2NmY0XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/movie/tt1877830" },
+                        { name: "سيرفر 2", url: "https://v2.vidsrc.me/embed/tt1877830" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/batman-480p.mp4",
+                        "720p": "https://example.com/download/batman-720p.mp4", 
+                        "1080p": "https://example.com/download/batman-1080p.mp4"
+                    }
+                },
+                {
+                    id: 2,
+                    title: "The Dark Knight",
+                    year: 2008,
+                    rating: 9.0,
+                    duration: "152 دقيقة",
+                    genres: ["أكشن", "جريمة", "دراما"],
+                    type: "movie",
+                    poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/movie/tt0468569" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/darkknight-480p.mp4",
+                        "720p": "https://example.com/download/darkknight-720p.mp4",
+                        "1080p": "https://example.com/download/darkknight-1080p.mp4"
+                    }
+                },
+                {
+                    id: 3,
+                    title: "Inception",
+                    year: 2010,
+                    rating: 8.8,
+                    duration: "148 دقيقة",
+                    genres: ["أكشن", "مغامرات", "خيال علمي"],
+                    type: "movie",
+                    poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/movie/tt1375666" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/inception-480p.mp4",
+                        "720p": "https://example.com/download/inception-720p.mp4",
+                        "1080p": "https://example.com/download/inception-1080p.mp4"
+                    }
+                },
+                {
+                    id: 4,
+                    title: "Breaking Bad",
+                    year: 2008,
+                    rating: 9.5,
+                    episodes: "62 حلقة",
+                    seasons: "5 مواسم",
+                    genres: ["جريمة", "دراما", "إثارة"],
+                    type: "series",
+                    poster: "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjFjZTE2MDJlMWIyXkEyXkFqcGdeQXVyMTMzNDExODE5._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/tv/tt0903747" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/breakingbad-s1-480p.zip",
+                        "720p": "https://example.com/download/breakingbad-s1-720p.zip",
+                        "1080p": "https://example.com/download/breakingbad-s1-1080p.zip"
+                    }
+                }
+            ],
+            movies: [
+                {
+                    id: 101,
+                    title: "Interstellar",
+                    year: 2014,
+                    rating: 8.6,
+                    duration: "169 دقيقة",
+                    genres: ["مغامرات", "دراما", "خيال علمي"],
+                    type: "movie",
+                    poster: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/movie/tt0816692" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/interstellar-480p.mp4",
+                        "720p": "https://example.com/download/interstellar-720p.mp4",
+                        "1080p": "https://example.com/download/interstellar-1080p.mp4"
+                    }
+                },
+                {
+                    id: 102,
+                    title: "The Shawshank Redemption",
+                    year: 1994,
+                    rating: 9.3,
+                    duration: "142 دقيقة",
+                    genres: ["دراما"],
+                    type: "movie",
+                    poster: "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/movie/tt0111161" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/shawshank-480p.mp4",
+                        "720p": "https://example.com/download/shawshank-720p.mp4",
+                        "1080p": "https://example.com/download/shawshank-1080p.mp4"
+                    }
+                }
+            ],
+            series: [
+                {
+                    id: 201,
+                    title: "Stranger Things",
+                    year: 2016,
+                    rating: 8.7,
+                    episodes: "34 حلقة",
+                    seasons: "4 مواسم",
+                    genres: ["رعب", "خيال علمي", "إثارة"],
+                    type: "series",
+                    poster: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3MjYtZGMzZWI1ZjhlOWJmXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg",
+                    servers: [
+                        { name: "سيرفر 1", url: "https://vidsrc.to/embed/tv/tt4574334" }
+                    ],
+                    downloadUrls: {
+                        "480p": "https://example.com/download/strangerthings-s1-480p.zip",
+                        "720p": "https://example.com/download/strangerthings-s1-720p.zip",
+                        "1080p": "https://example.com/download/strangerthings-s1-1080p.zip"
+                    }
+                }
+            ]
+        };
+
+        // المتغيرات العامة
+        let currentDownloadId = null;
+        let currentUser = {
+            name: "محمد",
+            watchHistory: JSON.parse(localStorage.getItem('watchHistory')) || [],
+            favorites: JSON.parse(localStorage.getItem('favorites')) || [],
+            preferences: JSON.parse(localStorage.getItem('preferences')) || {
+                quality: '720p',
+                autoplay: true,
+                subtitleLanguage: 'ar'
+            }
+        };
+
+        // التحكم في الصوت
+        const introAudio = document.getElementById('introAudio');
+        const loopAudio = document.getElementById('loopAudio');
+        const fxAudio = document.getElementById('fx');
+        const audioControl = document.getElementById('audioControl');
+        let isPlaying = false;
+
+        audioControl.addEventListener('click', toggleAudio);
+
+        function toggleAudio() {
+            playSound();
+            if (!isPlaying) {
+                introAudio.play();
+                introAudio.onended = () => {
+                    loopAudio.play();
+                };
+                audioControl.classList.add('playing');
+                isPlaying = true;
+            } else {
+                introAudio.pause();
+                loopAudio.pause();
+                introAudio.currentTime = 0;
+                loopAudio.currentTime = 0;
+                audioControl.classList.remove('playing');
+                isPlaying = false;
+            }
+        }
+
+        function playSound() {
+            fxAudio.currentTime = 0;
+            fxAudio.play();
+        }
+
+        // قائمة المستخدم
+        function toggleUserMenu() {
+            const userMenu = document.getElementById('userMenu');
+            userMenu.style.display = userMenu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showWatchHistory() {
+            alert('سجل المشاهدة:\n' + currentUser.watchHistory.map(item => 
+                `- ${item.title} (${item.watchedAt})`
+            ).join('\n'));
+        }
+
+        function showFavorites() {
+            alert('المفضلة:\n' + currentUser.favorites.map(item => 
+                `- ${item.title}`
+            ).join('\n'));
+        }
+
+        function showSettings() {
+            alert('الإعدادات:\n- الجودة: ' + currentUser.preferences.quality + 
+                  '\n- التشغيل التلقائي: ' + (currentUser.preferences.autoplay ? 'نعم' : 'لا'));
+        }
+
+        function showStatistics() {
+            const totalWatched = currentUser.watchHistory.length;
+            const favoriteGenre = getFavoriteGenre();
+            alert(`إحصائيات المشاهدة:\n- إجمالي المشاهدات: ${totalWatched}\n- النوع المفضل: ${favoriteGenre}`);
+        }
+
+        function getFavoriteGenre() {
+            const genreCount = {};
+            currentUser.watchHistory.forEach(item => {
+                item.genres.forEach(genre => {
+                    genreCount[genre] = (genreCount[genre] || 0) + 1;
+                });
+            });
+            return Object.keys(genreCount).reduce((a, b) => 
+                genreCount[a] > genreCount[b] ? a : b, 'غير محدد'
+            );
+        }
+
+        // التنقل بين الأقسام
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.netflix-section');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                playSound();
+                
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                sections.forEach(section => section.classList.remove('active'));
+                const sectionId = button.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // البحث
+        function performSearch() {
+            playSound();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm.trim() !== '') {
+                const allContent = getAllContent();
+                const results = allContent.filter(item => 
+                    item.title.toLowerCase().includes(searchTerm) ||
+                    item.genres.some(genre => genre.toLowerCase().includes(searchTerm))
+                );
+                
+                displaySearchResults(results);
+            } else {
+                document.querySelector('.nav-btn.active').click();
+            }
+        }
+
+        function getAllContent() {
+            let allContent = [];
+            for (const category in contentDatabase) {
+                allContent = allContent.concat(contentDatabase[category]);
+            }
+            return allContent;
+        }
+
+        function displaySearchResults(results) {
+            sections.forEach(section => section.classList.remove('active'));
+            
+            let searchSection = document.getElementById('search-results');
+            if (!searchSection) {
+                searchSection = document.createElement('section');
+                searchSection.id = 'search-results';
+                searchSection.className = 'netflix-section active';
+                searchSection.innerHTML = `
+                    <div class="section-header">
+                        <h2 class="section-title">نتائج البحث</h2>
+                    </div>
+                    <div class="netflix-row">
+                        <div class="row-scroll" id="search-results-content"></div>
+                    </div>
+                `;
+                document.querySelector('main').appendChild(searchSection);
+            } else {
+                searchSection.classList.add('active');
+            }
+            
+            const resultsContainer = document.getElementById('search-results-content');
+            resultsContainer.innerHTML = '';
+            
+            if (results.length > 0) {
+                results.forEach(content => {
+                    const card = createContentCard(content);
+                    resultsContainer.appendChild(card);
+                });
+            } else {
+                resultsContainer.innerHTML = '<div class="loading"><p>لا توجد نتائج للبحث</p></div>';
+            }
+        }
+
+        // السماح بالبحث عند الضغط على Enter
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // تمرير الصفوف
+        function scrollRow(button, amount) {
+            playSound();
+            const rowScroll = button.closest('.netflix-row').querySelector('.row-scroll');
+            rowScroll.scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        // فتح وإغلاق المودال
+        const videoModal = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const modalTitle = document.getElementById('modalTitle');
+        const serverSelector = document.getElementById('serverSelector');
+        const qualitySelector = document.getElementById('qualitySelector');
+
+        function openVideoModal(content) {
+            playSound();
+            
+            modalTitle.textContent = content.title;
+            
+            // إعداد خيارات السيرفر
+            serverSelector.innerHTML = '';
+            content.servers.forEach((server, index) => {
+                const serverBtn = document.createElement('button');
+                serverBtn.className = `server-btn ${index === 0 ? 'active' : ''}`;
+                serverBtn.textContent = server.name;
+                serverBtn.onclick = () => {
+                    document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
+                    serverBtn.classList.add('active');
+                    videoPlayer.src = server.url;
+                };
+                serverSelector.appendChild(serverBtn);
+            });
+            
+            // إعداد خيارات الجودة
+            qualitySelector.innerHTML = '';
+            const qualities = ['1080p', '720p', '480p'];
+            qualities.forEach((quality, index) => {
+                const qualityBtn = document.createElement('button');
+                qualityBtn.className = `quality-btn ${index === 0 ? 'active' : ''}`;
+                qualityBtn.textContent = quality;
+                qualityBtn.onclick = () => {
+                    document.querySelectorAll('.quality-btn').forEach(btn => btn.classList.remove('active'));
+                    qualityBtn.classList.add('active');
+                };
+                qualitySelector.appendChild(qualityBtn);
+            });
+            
+            videoPlayer.src = content.servers[0].url;
+            videoModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            
+            // إضافة إلى سجل المشاهدة
+            addToWatchHistory(content);
+        }
+
+        function closeModal() {
+            playSound();
+            videoModal.classList.remove('open');
+            videoPlayer.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        // إغلاق المودال عند الضغط على ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // نظام الترجمة
+        function changeSubtitle(language) {
+            if (language === 'none') {
+                alert('إزالة الترجمة');
+            } else {
+                alert(`تفعيل الترجمة باللغة: ${language}`);
+            }
+        }
+
+        function adjustSubtitleTiming(adjustment) {
+            alert(`ضبط توقيت الترجمة: ${adjustment} ثانية`);
+        }
+
+        // النافذة العائمة (Picture-in-Picture)
+        async function togglePictureInPicture() {
+            try {
+                if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture();
+                } else {
+                    await videoPlayer.requestPictureInPicture();
+                }
+            } catch (error) {
+                alert('الميزة غير مدعومة في هذا المتصفح');
+            }
+        }
+
+        // المشاهدة الجماعية
+        function createWatchParty() {
+            const partyId = generatePartyId();
+            const partyUrl = `${window.location.href}?party=${partyId}`;
+            navigator.clipboard.writeText(partyUrl);
+            alert('تم إنشاء جلسة مشاهدة جماعية! الرابط نسخ للحافظة');
+        }
+
+        function joinWatchParty() {
+            const partyId = prompt('أدخل رمز الجلسة الجماعية:');
+            if (partyId) {
+                alert(`الانضمام للجلسة: ${partyId}`);
+            }
+        }
+
+        function generatePartyId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // نظام التحميل
+        function showDownloadOptions(contentId) {
+            currentDownloadId = contentId;
+            const downloadOptions = document.getElementById('downloadOptions');
+            downloadOptions.classList.add('open');
+        }
+
+        function closeDownloadOptions() {
+            const downloadOptions = document.getElementById('downloadOptions');
+            downloadOptions.classList.remove('open');
+            // إعادة تعيين شريط التقدم
+            document.getElementById('downloadProgressContainer').style.display = 'none';
+            document.getElementById('downloadProgressBar').style.width = '0%';
+        }
+
+        function startDownload(quality) {
+            const content = getContentById(currentDownloadId);
+            if (content && content.downloadUrls && content.downloadUrls[quality]) {
+                simulateDownload(content.downloadUrls[quality], content.title, quality);
+            } else {
+                alert('رابط التحميل غير متوفر حالياً');
+            }
+        }
+
+        function simulateDownload(url, title, quality) {
+            const progressContainer = document.getElementById('downloadProgressContainer');
+            const progressBar = document.getElementById('downloadProgressBar');
+            const statusText = document.getElementById('downloadStatus');
+            
+            progressContainer.style.display = 'block';
+            statusText.textContent = `جاري تحميل ${title} - ${quality}`;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    statusText.textContent = 'اكتمل التحميل!';
+                    setTimeout(() => {
+                        triggerActualDownload(url, title, quality);
+                    }, 1000);
+                }
+                progressBar.style.width = progress + '%';
+            }, 200);
+        }
+
+        function triggerActualDownload(url, title, quality) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${title}-${quality}.mp4`;
+            link.click();
+            
+            setTimeout(() => {
+                closeDownloadOptions();
+                alert(`بدأ تحميل: ${title} - ${quality}`);
+            }, 1000);
+        }
+
+        function getContentById(contentId) {
+            for (const category in contentDatabase) {
+                const content = contentDatabase[category].find(item => item.id == contentId);
+                if (content) return content;
+            }
+            return null;
+        }
+
+        // تصفية المحتوى
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        let activeFilter = 'all';
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                playSound();
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                activeFilter = button.getAttribute('data-filter');
+                renderContent();
+            });
+        });
+
+        // دالة لإنشاء بطاقة المحتوى
+        function createContentCard(content) {
+            const card = document.createElement('article');
+            card.className = 'netflix-card';
+            
+            let badges = '';
+            if (content.rating) {
+                badges += `<div class="rating-badge">⭐ ${content.rating}</div>`;
+            }
+            if (content.type === 'series') {
+                badges += `<div class="ep-badge">${content.episodes}</div>`;
+            }
+            badges += `<div class="ad-free-badge">بدون إعلانات</div>`;
+            
+            const meta = content.type === 'movie' 
+                ? `${content.genres.join(' • ')} • ${content.year} • ${content.duration}`
+                : `${content.genres.join(' • ')} • ${content.year} • ${content.seasons}`;
+            
+            card.innerHTML = `
+                ${badges}
+                <img class="card-poster" src="${content.poster}" alt="${content.title}" onerror="this.src='https://via.placeholder.com/300x450/333/fff?text=صورة+غير+متوفرة'">
+                <div class="card-content">
+                    <div class="card-title">${content.title}</div>
+                    <div class="card-meta">${meta}</div>
+                    <div class="card-actions">
+                        <button class="action-btn btn-primary" onclick="openVideoModal(${JSON.stringify(content).replace(/"/g, '&quot;')})">▶ تشغيل</button>
+                        <button class="action-btn btn-secondary" onclick="showDownloadOptions(${content.id})">⬇ تحميل</button>
+                        <button class="action-btn btn-outline">ℹ تفاصيل</button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // إضافة إلى سجل المشاهدة
+        function addToWatchHistory(content) {
+            const watchItem = {
+                id: content.id,
+                title: content.title,
+                watchedAt: new Date().toLocaleString('ar-SA'),
+                type: content.type,
+                genres: content.genres
+            };
+            
+            // تجنب التكرار
+            currentUser.watchHistory = currentUser.watchHistory.filter(item => item.id !== content.id);
+            currentUser.watchHistory.unshift(watchItem);
+            
+            // حفظ في التخزين المحلي
+            localStorage.setItem('watchHistory', JSON.stringify(currentUser.watchHistory));
+        }
+
+        // دالة لعرض المحتوى
+        function renderContent() {
+            const featuredMovies = document.getElementById('featured-movies');
+            const featuredSeries = document.getElementById('featured-series');
+            
+            featuredMovies.innerHTML = '';
+            featuredSeries.innerHTML = '';
+            
+            contentDatabase.featured.forEach(content => {
+                if (activeFilter === 'all' || content.genres.includes(activeFilter)) {
+                    const card = createContentCard(content);
+                    if (content.type === 'movie') {
+                        featuredMovies.appendChild(card);
+                    } else {
+                        featuredSeries.appendChild(card);
+                    }
+                }
+            });
+            
+            const sections = ['movies', 'series', 'anime', 'turkish', 'arabic', 'animation'];
+            sections.forEach(section => {
+                const container = document.getElementById(`${section}-content`);
+                if (container) {
+                    container.innerHTML = '';
+                    if (contentDatabase[section]) {
+                        contentDatabase[section].forEach(content => {
+                            if (activeFilter === 'all' || content.genres.includes(activeFilter)) {
+                                const card = createContentCard(content);
+                                container.appendChild(card);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        // تهيئة المحتوى عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            renderContent();
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
