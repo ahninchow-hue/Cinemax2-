@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سينما ناو — Netflix Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo">M ❤️</div>
+            <div>
+                <div class="site-title">سينما ناو</div>
+                <div class="site-subtitle">Netflix Style — محمد أحنيين</div>
+            </div>
+        </div>
+        <div class="header-controls">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="ابحث عن فيلم أو مسلسل..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="audio-control" id="audioControl" title="تشغيل / إيقاف الموسيقى">
+                <i class="fas fa-music"></i>
+                <span>موسيقى</span>
+            </div>
+            <div class="user-menu" onclick="toggleUserMenu()">
+                <div class="user-avatar">م</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="user-menu-dropdown" id="userMenu">
+        <div><strong>مرحباً، محمد</strong></div>
+        <div class="menu-actions">
+            <button class="action-btn btn-outline" onclick="showWatchHistory()">سجل المشاهدة</button>
+            <button class="action-btn btn-outline" onclick="showFavorites()">المفضلة</button>
+            <button class="action-btn btn-outline" onclick="showSettings()">الإعدادات</button>
+            <button class="action-btn btn-outline" onclick="showStatistics()">إحصائيات</button>
+        </div>
+    </div>
+
+    <audio id="introAudio" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/08/audio_bf1de6f3cf.mp3?filename=sci-fi-cinematic-intro-11029.mp3" type="audio/mp3">
+    </audio>
+    <audio id="loopAudio" preload="auto" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2024/01/24/audio_8dc8790f75.mp3?filename=soft-piano-melody-185359.mp3" type="audio/mp3">
+    </audio>
+    <audio id="fx" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9abf5f7e10.mp3?filename=click-ping-6161.mp3" type="audio/mp3">
+    </audio>
+
+    <main>
+        <div class="netflix-nav">
+            <button class="nav-btn active" data-section="featured">🎬 المميز</button>
+            <button class="nav-btn" data-section="movies">🎥 أفلام عالمية</button>
+            <button class="nav-btn" data-section="series">📺 مسلسلات أجنبية</button>
+            <button class="nav-btn" data-section="anime">🇯🇵 أنمي</button>
+            <button class="nav-btn" data-section="turkish">🇹🇷 تركية</button>
+            <button class="nav-btn" data-section="arabic">🌍 عربية</button>
+            <button class="nav-btn" data-section="animation">🎪 أنميشن</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">الكل</button>
+            <button class="filter-btn" data-filter="action">أكشن</button>
+            <button class="filter-btn" data-filter="drama">دراما</button>
+            <button class="filter-btn" data-filter="comedy">كوميدي</button>
+            <button class="filter-btn" data-filter="thriller">إثارة</button>
+            <button class="filter-btn" data-filter="romance">رومانسي</button>
+            <button class="filter-btn" data-filter="fantasy">خيال</button>
+            <button class="filter-btn" data-filter="sci-fi">خيال علمي</button>
+            <button class="filter-btn" data-filter="adventure">مغامرات</button>
+        </div>
+
+        <section id="featured" class="netflix-section active">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">المحتوى المميز</h2>
+                    <div class="section-subtitle">أفضل الأفلام والمسلسلات المختارة لك</div>
+                </div>
+            </div>
+            <div class="netflix-row">
+                <div class="row-header">
+                    <h3 class="row-title">أفلام حصرية</h3>
+                    <div class="row-controls">
+                        <button class="scroll-btn left" onclick="scrollRow(this, -300)">‹</button>
+                        <button class="scroll-btn right" onclick="scrollRow(this, 300)">›</button>
+                    </div>
+                </div>
+                <div class="row-scroll" id="featured-movies"></div>
+            </div>
+            <div class="netflix-row">
+                <div class="row-header">
+                    <h3 class="row-title">مسلسلات مشهورة</h3>
+                    <div class="row-controls">
+                        <button class="scroll-btn left" onclick="scrollRow(this, -300)">‹</button>
+                        <button class="scroll-btn right" onclick="scrollRow(this, 300)">›</button>
+                    </div>
+                </div>
+                <div class="row-scroll" id="featured-series"></div>
+            </div>
+        </section>
+
+        <section id="movies" class="netflix-section"><div class="section-header"><h2 class="section-title">🎥 أفلام عالمية</h2></div><div class="netflix-row"><div class="row-scroll" id="movies-content"></div></div></section>
+        <section id="series" class="netflix-section"><div class="section-header"><h2 class="section-title">📺 مسلسلات أجنبية</h2></div><div class="netflix-row"><div class="row-scroll" id="series-content"></div></div></section>
+        <section id="anime" class="netflix-section"><div class="section-header"><h2 class="section-title">🇯🇵 أنمي</h2></div><div class="netflix-row"><div class="row-scroll" id="anime-content"></div></div></section>
+        <section id="turkish" class="netflix-section"><div class="section-header"><h2 class="section-title">🇹🇷 مسلسلات تركية</h2></div><div class="netflix-row"><div class="row-scroll" id="turkish-content"></div></div></section>
+        <section id="arabic" class="netflix-section"><div class="section-header"><h2 class="section-title">🌍 مسلسلات عربية</h2></div><div class="netflix-row"><div class="row-scroll" id="arabic-content"></div></div></section>
+        <section id="animation" class="netflix-section"><div class="section-header"><h2 class="section-title">🎪 أنميشن</h2></div><div class="netflix-row"><div class="row-scroll" id="animation-content"></div></div></section>
+    </main>
+
+    <!-- مودال المشاهدة -->
+    <div class="modal" id="videoModal">
+        <div class="modal-bg" onclick="closeModal()"></div>
+        <div class="modal-card">
+            <div class="modal-head"><div class="modal-title" id="modalTitle">مشاهدة الفيلم</div><button class="scroll-btn" onclick="closeModal()">✕</button></div>
+            <div class="subtitle-controls">
+                <select class="subtitle-select" id="subtitleSelect" onchange="changeSubtitle(this.value)">
+                    <option value="none">بدون ترجمة</option>
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                </select>
+                <button class="action-btn btn-outline" onclick="adjustSubtitleTiming(-1)">← توقيت</button>
+                <button class="action-btn btn-outline" onclick="adjustSubtitleTiming(1)">توقيت →</button>
+                <button class="pip-btn" onclick="togglePictureInPicture()"><i class="fas fa-compress"></i> نافذة عائمة</button>
+            </div>
+            <div class="watch-party-controls">
+                <button class="party-btn" onclick="createWatchParty()">بدء مشاهدة جماعية</button>
+                <button class="action-btn btn-outline" onclick="joinWatchParty()">الانضمام لمشاهدة</button>
+            </div>
+            <div class="server-selector" id="serverSelector"></div>
+            <div class="quality-selector" id="qualitySelector"></div>
+            <div class="modal-body"><iframe class="player" id="videoPlayer" allowfullscreen></iframe></div>
+        </div>
+    </div>
+
+    <!-- مودال التحميل -->
+    <div class="download-options" id="downloadOptions">
+        <div class="modal-bg" onclick="closeDownloadOptions()"></div>
+        <div class="download-modal">
+            <h3>خيارات التحميل</h3>
+            <div class="quality-options">
+                <div class="quality-option"><div><span>480p</span><span>(700MB)</span></div><button class="download-btn" onclick="startDownload('480p')">تحميل</button></div>
+                <div class="quality-option"><div><span>720p</span><span>(1.5GB)</span></div><button class="download-btn" onclick="startDownload('720p')">تحميل</button></div>
+                <div class="quality-option"><div><span>1080p</span><span>(3GB)</span></div><button class="download-btn" onclick="startDownload('1080p')">تحميل</button></div>
+            </div>
+            <div id="downloadProgressContainer" style="display:none;"><div class="download-progress"><div class="progress-bar" id="downloadProgressBar"></div></div><p id="downloadStatus">جاري التحميل...</p></div>
+            <button class="action-btn btn-outline" onclick="closeDownloadOptions()">إغلاق</button>
+        </div>
+    </div>
+
+    <footer><p>جميع الحقوق محفوظة &copy; 2024 <strong>سينما ناو</strong> — تصميم <strong>محمد أحنيين</strong></p><p style="font-size:12px">هذا الموقع لأغراض تعليمية وتجريبية فقط</p></footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+سينما-ناو/
+├── index.html
+├── css/
+│   └── style.css
+├── js/
+│   └── script.js
+├── assets/
+│   └── images/
+│       └── placeholder.jpg
+├── README.md
+└── .gitignore
